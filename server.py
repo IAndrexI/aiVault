@@ -4,9 +4,10 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any, Union
 from mem0 import Memory
 
-app = FastAPI(title="aiVault Mem0 Server")
+app = FastAPI(title="aiVault Mem0 Server (100% Self-Hosted)")
 
-# Configure vector store and LLM provider
+llm_provider = os.getenv("LLM_PROVIDER", "ollama")
+
 config: Dict[str, Any] = {
     "vector_store": {
         "provider": "qdrant",
@@ -14,22 +15,30 @@ config: Dict[str, Any] = {
             "host": os.getenv("QDRANT_HOST", "agent_qdrant"),
             "port": int(os.getenv("QDRANT_PORT", "6333")),
         }
-    },
-    "llm": {
-        "provider": os.getenv("LLM_PROVIDER", "openai"),
-        "config": {
-            "api_key": os.getenv("OPENAI_API_KEY", ""),
-        }
     }
 }
 
-# Optional local Ollama embeddings configuration
-if os.getenv("OLLAMA_BASE_URL"):
+if llm_provider == "ollama":
+    ollama_url = os.getenv("OLLAMA_BASE_URL", "http://agent_ollama:11434")
+    config["llm"] = {
+        "provider": "ollama",
+        "config": {
+            "model": os.getenv("OLLAMA_LLM_MODEL", "llama3.2:1b"),
+            "ollama_base_url": ollama_url,
+        }
+    }
     config["embedder"] = {
         "provider": "ollama",
         "config": {
-            "model": os.getenv("OLLAMA_MODEL", "bge-m3"),
-            "ollama_base_url": os.getenv("OLLAMA_BASE_URL"),
+            "model": os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text"),
+            "ollama_base_url": ollama_url,
+        }
+    }
+else:
+    config["llm"] = {
+        "provider": "openai",
+        "config": {
+            "api_key": os.getenv("OPENAI_API_KEY", ""),
         }
     }
 
@@ -69,4 +78,4 @@ def search_memory(req: SearchMemoryRequest):
 
 @app.get("/health")
 def health():
-    return {"status": "healthy"}
+    return {"status": "healthy", "provider": llm_provider}
