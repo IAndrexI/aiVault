@@ -10,9 +10,9 @@ services:
     volumes:
       - ./qdrant_storage:/qdrant/storage:z
 
-  # 2. Adaptive Memory Layer (Fact extraction, deduplication, conflict resolution)
+  # 2. Adaptive Memory Layer (Built locally via Dockerfile, architecture-independent)
   mem0:
-    image: mem0/mem0:latest
+    build: .
     container_name: agent_mem0
     restart: unless-stopped
     ports:
