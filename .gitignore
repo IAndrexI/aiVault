@@ -1,0 +1,15 @@
+# Secrets & Local Configuration
+.env
+.env.local
+*.env
+
+# Persistent Database & Vector Storage
+qdrant_storage/
+data/
+
+# Logs & System Artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+.DS_Store
+Thumbs.db

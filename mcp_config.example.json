@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "agent-memory": {
+      "command": "npx",
+      "args": ["-y", "mem0-mcp"],
+      "env": {
+        "MEM0_API_URL": "http://<YOUR_PROXMOX_LXC_IP>:8888",
+        "MEM0_USER_ID": "default_user"
+      }
+    }
+  }
+}
