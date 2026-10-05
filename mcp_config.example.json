@@ -1,11 +1,13 @@
 {
   "mcpServers": {
-    "agent-memory": {
-      "command": "npx",
-      "args": ["-y", "mem0-mcp"],
+    "qdrant-memory": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-qdrant"
+      ],
       "env": {
-        "MEM0_API_URL": "http://<YOUR_PROXMOX_LXC_IP>:8888",
-        "MEM0_USER_ID": "default_user"
+        "QDRANT_URL": "http://192.168.0.250:6333",
+        "COLLECTION_NAME": "agent-memory"
       }
     }
   }
